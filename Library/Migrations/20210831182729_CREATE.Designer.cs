@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210830192720_create")]
-    partial class create
+    [Migration("20210831182729_CREATE")]
+    partial class CREATE
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,21 @@ namespace Library.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("AuthorBook", b =>
+                {
+                    b.Property<int>("AuthorsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BooksId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AuthorsId", "BooksId");
+
+                    b.HasIndex("BooksId");
+
+                    b.ToTable("AuthorBook");
+                });
 
             modelBuilder.Entity("Library.Data.Models.Author", b =>
                 {
@@ -77,28 +92,6 @@ namespace Library.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("Library.Data.Models.Book_Author", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("Books_Authors");
-                });
-
             modelBuilder.Entity("Library.Data.Models.Log", b =>
                 {
                     b.Property<int>("Id")
@@ -147,6 +140,21 @@ namespace Library.Migrations
                     b.ToTable("Publishers");
                 });
 
+            modelBuilder.Entity("AuthorBook", b =>
+                {
+                    b.HasOne("Library.Data.Models.Author", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.Models.Book", null)
+                        .WithMany()
+                        .HasForeignKey("BooksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Library.Data.Models.Book", b =>
                 {
                     b.HasOne("Library.Data.Models.Publisher", "Publisher")
@@ -156,35 +164,6 @@ namespace Library.Migrations
                         .IsRequired();
 
                     b.Navigation("Publisher");
-                });
-
-            modelBuilder.Entity("Library.Data.Models.Book_Author", b =>
-                {
-                    b.HasOne("Library.Data.Models.Author", "Author")
-                        .WithMany("Book_Authors")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Library.Data.Models.Book", "Book")
-                        .WithMany("Book_Authors")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Book");
-                });
-
-            modelBuilder.Entity("Library.Data.Models.Author", b =>
-                {
-                    b.Navigation("Book_Authors");
-                });
-
-            modelBuilder.Entity("Library.Data.Models.Book", b =>
-                {
-                    b.Navigation("Book_Authors");
                 });
 
             modelBuilder.Entity("Library.Data.Models.Publisher", b =>

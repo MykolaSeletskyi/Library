@@ -9,8 +9,6 @@ namespace Library.Data.Models
     {
         public int Id { get; set; }
         public string FullName { get; set; }
-
-
-        public List<Book_Author> Book_Authors { get; set; }
+        public HashSet<Book> Books { get; set; }
     }
 }
