@@ -67,7 +67,7 @@ namespace Library.Data.Services
                     BookAuthors = n.Books.Select(n => new BookAuthorVM()
                     {
                         BookName = n.Title,
-                       // BookAuthors = n.Book_Authors.Select(n => n.Author.FullName).ToList()
+                        BookAuthors = n.Authors.Select(n => n.FullName).ToList()
                     }).ToList()
                 }).FirstOrDefault();
             return _publisherData;

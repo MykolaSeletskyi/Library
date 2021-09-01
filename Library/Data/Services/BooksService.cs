@@ -16,7 +16,27 @@ namespace Library.Data.Services
             _context = context;
         }
 
-        public List<Book> GetAllBooks() => _context.Books.ToList();
+        public List<GetBookVM> GetAllBooks()
+        {
+            List<GetBookVM> _books = _context.Books
+                .Select(i => new GetBookVM()
+                {
+                    Id = i.Id,
+                    DateRead = i.DateRead,
+                    CoverUrl = i.CoverUrl,
+                    IsRead = i.IsRead,
+                    Description = i.Description,
+                    Genre = i.Genre,
+                    Rate = i.Rate,
+                    Title = i.Title,
+                    Authors = i.Authors.Select(i => i.FullName).ToList(),
+                    AuthorIds = i.Authors.Select(i => i.Id).ToList(),
+                    Publisher = i.Publisher.Name,
+                    PublisherId = i.PublisherId
+                }).ToList<GetBookVM>();
+            return _books;
+        }
+
         public GetBookVM GetBookById(int id) 
         {
             GetBookVM _book = _context.Books.Where(i => i.Id == id)
@@ -67,7 +87,9 @@ namespace Library.Data.Services
                 _book.Rate = book.IsRead ? book.Rate.Value : null;
                 _book.Genre = book.Genre;
                 _book.CoverUrl = book.CoverUrl;
-
+                _book.DateAdded = DateTime.Now;
+                _book.PublisherId = book.PublisherId;
+                _book.Authors = _context.Authors.Where(i => book.AuthorIds.Contains(i.Id)).ToHashSet<Author>();
                 _context.SaveChanges();
             }
 

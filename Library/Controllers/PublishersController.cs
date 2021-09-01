@@ -14,25 +14,25 @@ namespace Library.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-        public class PublishersController : ControllerBase
+    public class PublishersController : ControllerBase
+    {
+        private readonly PublishersService _publisherService;
+
+        public PublishersController(PublishersService publishersService)
         {
-            private readonly PublishersService _publisherService;
+            _publisherService = publishersService;
+        }
 
-            public PublishersController(PublishersService publishersService)
+        [HttpGet("get-all-publishers")]
+        public IActionResult GetAllPublishers(string sortBy, string searchString, int? pageNumber)
+        {
+            if (sortBy == "E")
             {
-                _publisherService = publishersService;
-            }
-
-            [HttpGet("get-all-publishers")]
-            public IActionResult GetAllPublishers(string sortBy, string searchString, int? pageNumber)
-            {
-            if (sortBy=="E")
-            {
-                 throw new Exception();
+                throw new Exception();
             }
             var allPublishers = _publisherService.GetAllPublishers(sortBy, searchString, pageNumber);
-                return Ok(allPublishers);
-            }
+            return Ok(allPublishers);
+        }
 
         [HttpGet("get-publisher-by-id/{id}")]
         public CustomActionResult GetPublisherById(int id)
@@ -61,25 +61,25 @@ namespace Library.Controllers
         }
 
         [HttpGet("get-publisher-books-with-authors/{id}")]
-            public IActionResult GetPublisherData(int id)
+        public IActionResult GetPublisherBooksWithAuthors(int id)
+        {
+            var _publisherData = _publisherService.GetPublisherData(id);
+            if (_publisherData != null)
             {
-                var _pablosherData = _publisherService.GetPublisherData(id);
-                if (_pablosherData != null)
-                {
-                    return Ok(_pablosherData);
-                }
-                else
-                {
-                    return NotFound();
-                }
+                return Ok(_publisherData);
             }
+            else
+            {
+                return NotFound();
+            }
+        }
 
-            [HttpPost("add-publisher")]
-            public IActionResult AddPublisher([FromBody] PublisherVM publisher)
-            {
-                var newPublisher = _publisherService.AddPublisher(publisher);
-                return Created(nameof(AddPublisher), newPublisher);
-            }
+        [HttpPost("add-publisher")]
+        public IActionResult AddPublisher([FromBody] PublisherVM publisher)
+        {
+            var newPublisher = _publisherService.AddPublisher(publisher);
+            return Created(nameof(AddPublisher), newPublisher);
+        }
 
         [HttpPut("update-author-by-id/{id}")]
         public IActionResult UpdateAuthorById(int id, [FromBody] PublisherVM publisher)
@@ -89,17 +89,17 @@ namespace Library.Controllers
         }
 
         [HttpDelete("delete-publisher-by-id/{id}")]
-            public IActionResult DeletePublisherById(int id)
+        public IActionResult DeletePublisherById(int id)
+        {
+            try
             {
-                try
-                {
-                    _publisherService.DeletePublisherById(id);
-                    return Ok();
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
+                _publisherService.DeletePublisherById(id);
+                return Ok();
             }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
