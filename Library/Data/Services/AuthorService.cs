@@ -14,6 +14,27 @@ namespace Library.Data.Services
         {
             _context = context;
         }
+        public List<GetAuthorVM> GetAllAuthors()
+        {
+            List<GetAuthorVM> _authors = _context.Authors.Select(x => new GetAuthorVM() { Id = x.Id, FullName = x.FullName }).ToList();
+            return _authors;
+        }
+        public GetAuthorVM GetAuthorById(int bookId)
+        {
+            GetAuthorVM _author = _context.Authors.Where(n => n.Id == bookId).Select(x=> new GetAuthorVM() { Id=x.Id,FullName=x.FullName}).FirstOrDefault();  
+            return _author;
+        }
+
+        //public AuthorWithBooksVM GetAuthorWithBooks(int authorId)
+        //{
+        //    var _author = _context.Authors.Where(n => n.Id == authorId).Select(n => new AuthorWithBooksVM()
+        //    {
+        //        FullName = n.FullName,
+        //        BookTitles = n.Book_Authors.Select(n => n.Book.Title).ToList()
+        //    }).FirstOrDefault();
+
+        //    return _author;
+        //}
 
         public void AddAuthor(AuthorVM book)
         {
@@ -25,11 +46,6 @@ namespace Library.Data.Services
             _context.SaveChanges();
         }
 
-        public Author GetAuthorById(int bookId)
-        {
-            var _author = _context.Authors.Where(n => n.Id == bookId).FirstOrDefault();
-            return _author;
-        }
         public Author UpdateAuthorById(int bookId, AuthorVM book)
         {
             var _author = _context.Authors.FirstOrDefault(n => n.Id == bookId);
@@ -54,15 +70,5 @@ namespace Library.Data.Services
             }
         }
 
-        //public AuthorWithBooksVM GetAuthorWithBooks(int authorId)
-        //{
-        //    var _author = _context.Authors.Where(n => n.Id == authorId).Select(n => new AuthorWithBooksVM()
-        //    {
-        //        FullName = n.FullName,
-        //        BookTitles = n.Book_Authors.Select(n => n.Book.Title).ToList()
-        //    }).FirstOrDefault();
-
-        //    return _author;
-        //}
     }
 }

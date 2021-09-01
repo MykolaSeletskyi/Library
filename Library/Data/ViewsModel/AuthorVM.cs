@@ -10,9 +10,9 @@ namespace Library.Data.ViewsModel
         public string FullName { get; set; }
     }
 
-    public class AuthorWithBooksVM
+    public class GetAuthorVM
     {
+        public int Id { get; set; }
         public string FullName { get; set; }
-        public List<string> BookTitles { get; set; }
     }
 }

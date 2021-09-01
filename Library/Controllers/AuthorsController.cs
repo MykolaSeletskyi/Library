@@ -21,6 +21,13 @@ namespace Library.Controllers
             _authorsService = authorsService;
         }
 
+        [HttpGet("get-all-authors")]
+        public IActionResult GetAllAuthors()
+        {
+            var _authors = _authorsService.GetAllAuthors();
+            return Ok(_authors);
+        }
+
         [HttpGet("get-author-by-id/{id}")]
         public IActionResult GetAuthorById(int id)
         {
